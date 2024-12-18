@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulse Fitness | Об авторе</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/styles.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/#home">pulse.</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Главная</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#services">Услуги</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#gallery">Галерея</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#trainers">Тренеры</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#subscriptions">Абонементы</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#contact">Контакты</a></li>
+                <li class="nav-item"><a class="nav-link" href="/about">Об авторе</a></li>
+                <li class="nav-item"><a class="nav-link btn btn-outline-secondary ms-2" href="/schedule">Расписание</a></li>
+            </ul>
+
+            <div class="nav-placeholder"></div>
+
+            <ul class="navbar-nav">
+                <li class="nav-item" th:if="${loggedInUser == null}">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Войти</a>
+                </li>
+                <li class="nav-item" th:if="${loggedInUser == null}">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Регистрация</a>
+                </li>
+                <li class="nav-item nav-user" th:if="${loggedInUser != null}">
+                    <span class="greeting">Привет, <strong th:text="${loggedInUser.username}"></strong>!</span>
+                    <a class="nav-link" href="/profile">Личный кабинет</a>
+                    <a class="nav-link" href="/logout">Выход</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Модальное окно для входа -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Вход</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/login" method="post">
+                    <div class="mb-3">
+                        <label for="login-email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="login-email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="login-password" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="login-password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для регистрации -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/register" method="post">
+                    <div class="mb-3">
+                        <label for="register-username" class="form-label">Имя пользователя</label>
+                        <input type="text" class="form-control" id="register-username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="register-email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="register-email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="register-password" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="register-password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="register-role" class="form-label">Роль</label>
+                        <select class="form-select" id="register-role" name="role" required>
+                            <option value="USER">Пользователь</option>
+                            <option value="MANAGER">Менеджер</option>
+                            <option value="ADMIN">Администратор</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main class="container-fluid py-5" style="
+    background: linear-gradient(to right, #e3f2fd 50%, #ffffff 50%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+">
+    <section class="container py-5">
+        <div class="row align-items-center">
+            <!-- Фото с декоративной рамкой -->
+            <div class="col-lg-6 text-center mb-4 mb-lg-0" style="position: relative;">
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 420px;
+                    height: 420px;
+                    background: linear-gradient(135deg, #007BFF, #00C6FF);
+                    border-radius: 50%;
+                    z-index: 0;
+                    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+                "></div>
+                <img src="/images/my_photo.jpg" alt="Мое фото"
+                     class="img-fluid rounded-circle shadow-lg"
+                     style="width: 400px; height: 400px; object-fit: cover; z-index: 1; position: relative;">
+            </div>
+
+            <!-- Текстовая часть с карточкой -->
+            <div class="col-lg-6">
+                <div style="
+                    background: #ffffff;
+                    border-radius: 15px;
+                    padding: 30px;
+                    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+                ">
+                    <h2 class="fw-bold mb-4" style="font-family: 'Roboto', sans-serif; color: #007BFF;">Обо мне</h2>
+                    <p class="lead mb-4">Привет! Меня зовут <strong>Диана</strong>, я студентка Финансового университета, факультета информационных технологий и анализа больших данных. Этот сайт я разработала с особым вниманием к удобству как для клиентов фитнес-клуба, так и для администраторов и менеджеров. Я сама являюсь клиентом фитнес клуба, и знаю, насколько важно, чтобы сайт был клиентоориентированным, интуитивно понятным и удобным в использовании.</p>
+
+                    <h4 class="fw-bold mt-4 mb-3" style="border-bottom: 2px solid #007BFF; padding-bottom: 5px;">Контактные данные</h4>
+                    <ul class="list-unstyled mb-4">
+                        <li><i class="fas fa-envelope me-2"></i> Электронная почта: <a href="mailto:dianakaravaeva@gmail.com">dianakaravaeva@gmail.com</a></li>
+                    </ul>
+
+                    <h4 class="fw-bold mt-4 mb-3" style="border-bottom: 2px solid #007BFF; padding-bottom: 5px;">Опыт работы с технологиями</h4>
+                    <p class="mb-4">Для разработки сайта я использовала <strong>Spring Boot</strong> для backend-части, <strong>Thymeleaf</strong> для динамической генерации HTML и <strong>Bootstrap</strong> для стилизации интерфейса. Для работы с данными применяла <strong>JPA</strong>, что обеспечило эффективное взаимодействие с базой данных.</p>
+
+                    <h4 class="fw-bold mt-4 mb-3" style="border-bottom: 2px solid #007BFF; padding-bottom: 5px;">Даты работы над проектом</h4>
+                    <ul class="list-unstyled">
+                        <li><strong>Начало работы:</strong> Октябрь 2024 года</li>
+                        <li><strong>Завершение работы:</strong> Декабрь 2024 года</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p class="footer-text">&copy; 2024 Pulse Fitness. Все права защищены.</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

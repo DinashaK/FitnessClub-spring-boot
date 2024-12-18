@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Pulse Fitness | Главная</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/styles.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Главная навигационная панель -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="#home">pulse.</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="#home">Главная</a></li>
+        <li class="nav-item"><a class="nav-link" href="#services">Услуги</a></li>
+        <li class="nav-item"><a class="nav-link" href="#gallery">Галерея</a></li>
+        <li class="nav-item"><a class="nav-link" href="#trainers">Тренеры</a></li>
+        <li class="nav-item"><a class="nav-link" href="#subscriptions">Абонементы</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Контакты</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about">Об авторе</a></li>
+        <li class="nav-item"><a class="nav-link btn btn-outline-secondary ms-2" href="/schedule">Расписание</a></li>
+      </ul>
+
+      <div class="nav-placeholder"></div>
+
+      <ul class="navbar-nav">
+        <li class="nav-item" th:if="${loggedInUser == null}">
+          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Войти</a>
+        </li>
+        <li class="nav-item" th:if="${loggedInUser == null}">
+          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Регистрация</a>
+        </li>
+        <li class="nav-item nav-user" th:if="${loggedInUser != null}">
+          <span class="greeting">Привет, <strong th:text="${loggedInUser.username}"></strong>!</span>
+          <a class="nav-link" href="/profile">Личный кабинет</a>
+          <a class="nav-link" href="/logout">Выход</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Модальное окно для входа -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Вход</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/login" method="post">
+          <div class="mb-3">
+            <label for="login-email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="login-email" name="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="login-password" class="form-label">Пароль</label>
+            <input type="password" class="form-control" id="login-password" name="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Войти</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Модальное окно для регистрации -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="registerModalLabel">Регистрация</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/register" method="post">
+          <div class="mb-3">
+            <label for="register-username" class="form-label">Имя пользователя</label>
+            <input type="text" class="form-control" id="register-username" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="register-email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="register-email" name="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="register-password" class="form-label">Пароль</label>
+            <input type="password" class="form-control" id="register-password" name="password" required>
+          </div>
+          <!-- Добавляем выбор роли -->
+          <div class="mb-3">
+            <label for="register-role" class="form-label">Роль</label>
+            <select class="form-select" id="register-role" name="role" required>
+              <option value="USER">Пользователь</option>
+              <option value="MANAGER">Менеджер</option>
+              <option value="ADMIN">Администратор</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<header id="home" class="hero-section">
+  <div class="overlay" style="background: rgba(0, 0, 0, 0.5); height: 100%; display: flex; align-items: center; justify-content: center;">
+    <h1 style="font-family: 'Abril Fatface', sans-serif; font-size: 12rem; color: white; text-shadow: 4px 4px 12px rgba(0, 0, 0, 0.8); font-weight: bold; text-transform: uppercase;">
+      Pulse.
+    </h1>
+  </div>
+</header>
+
+<!-- Основное содержание -->
+<main>
+  <!-- Секция услуг -->
+  <section id="services" class="section">
+    <div class="container text-center">
+      <h2>Наши услуги</h2>
+      <div class="row">
+        <div class="col-md-4 d-flex align-items-stretch">
+          <div class="service-card card shadow-sm">
+            <img src="/images/personal-training.jpg" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Персональные тренировки">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title">Персональные тренировки</h3>
+              <p class="card-text">Индивидуальные занятия с профессиональными тренерами.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 d-flex align-items-stretch">
+          <div class="service-card card shadow-sm">
+            <img src="/images/group-classes.jpg" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Групповые занятия">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title">Групповые занятия</h3>
+              <p class="card-text">Разнообразные классы для всех уровней подготовки.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 d-flex align-items-stretch">
+          <div class="service-card card shadow-sm">
+            <img src="/images/nutrition-plans.jpg" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Питание и диеты">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title">Планы питания</h3>
+              <p class="card-text">Персонализированные диеты для достижения ваших целей.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-md-4 d-flex align-items-stretch">
+          <div class="service-card card shadow-sm">
+            <img src="/images/cycle-room.jpg" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Зал Cycle">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title">Зал Cycle</h3>
+              <p class="card-text">Современный зал для высокоинтенсивных велотренировок.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 d-flex align-items-stretch">
+          <div class="service-card card shadow-sm">
+            <img src="/images/pool.jpg" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Бассейн">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title">Бассейн</h3>
+              <p class="card-text">Проведите время с пользой и удовольствием в бассейне.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 d-flex align-items-stretch">
+          <div class="service-card card shadow-sm">
+            <img src="/images/sauna.jpg" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Сауна">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title">Сауна</h3>
+              <p class="card-text">Расслабьтесь и восстановите силы в сауне с комфортной атмосферой.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Секция галереи -->
+  <section id="gallery" class="section">
+    <div class="container text-center">
+      <h2>Фотогалерея</h2>
+      <div class="row">
+        <div class="col-md-4">
+          <img src="/images/gallery1.jpg" class="img-fluid" alt="Фото 1">
+        </div>
+        <div class="col-md-4">
+          <img src="/images/gallery2.jpg" class="img-fluid" alt="Фото 2">
+        </div>
+        <div class="col-md-4">
+          <img src="/images/gallery3.jpg" class="img-fluid" alt="Фото 3">
+        </div>
+        <div class="col-md-4">
+          <img src="/images/gallery6.jpg" class="img-fluid" alt="Фото 6">
+        </div>
+        <div class="col-md-4">
+          <img src="/images/gallery7.jpg" class="img-fluid" alt="Фото 7">
+        </div>
+        <div class="col-md-4">
+          <img src="/images/gallery8.jpg" class="img-fluid" alt="Фото 7">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Секция тренеров -->
+  <section id="trainers" class="section">
+    <div class="container text-center">
+      <h2 class="mb-4">Наши тренеры</h2>
+      <div class="trainer-slider-container">
+        <button id="prevBtn" class="slider-btn slider-btn-left">&lt;</button>
+        <div class="trainer-slider">
+          <div class="trainer-card">
+            <img src="https://nef.fit/wp-content/uploads/2024/08/DSC_3523.jpg" alt="Киркина Екатерина">
+            <h5>Киркина Екатерина</h5>
+            <p>Персональный фитнес-тренер, тренер водных программ</p>
+          </div>
+          <div class="trainer-card">
+            <img src="https://nef.fit/wp-content/uploads/2024/06/DSC_9781.jpg" alt="Перминов Борис">
+            <h5>Перминов Борис</h5>
+            <p>Опыт работы более 5 лет. Набор массы и похудение.</p>
+          </div>
+          <div class="trainer-card">
+            <img src="https://nef.fit/wp-content/uploads/2021/11/DSC_7569.jpg" alt="Кубрякова Наталья">
+            <h5>Кубрякова Наталья</h5>
+            <p>Тренер групповых программ с опытом более 20 лет.</p>
+          </div>
+          <div class="trainer-card">
+            <img src="https://nef.fit/wp-content/uploads/2021/11/DSC_7309.jpg" alt="Тютина Наталья">
+            <h5>Тютина Наталья</h5>
+            <p>Инструктор по хатха-йоге, йогатерапии и ЛФК.</p>
+          </div>
+          <div class="trainer-card">
+            <img src="https://nef.fit/wp-content/uploads/2024/06/DSC_1532.jpg" alt="Голошубов Евгений">
+            <h5>Голошубов Евгений</h5>
+            <p>Вице-чемпион Европы по бодибилдингу.</p>
+          </div>
+        </div>
+        <button id="nextBtn" class="slider-btn slider-btn-right">&gt;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Секция абонементов -->
+  <section id="subscriptions" class="section">
+    <div class="container text-center">
+      <h2 class="mb-5">Наши абонементы</h2>
+      <div class="row mt-4" id="subscription-card">
+      </div>
+      <div id="subscription-details" class="subscription-details mt-5"></div>
+    </div>
+  </section>
+
+  <!-- Секция контактов -->
+  <section id="contact" class="section">
+    <div class="map-container">
+      <div class="contact-card">
+        <h1 class="contact-title">Контакты</h1>
+        <h2>pulsefitness@yandex.ru</h2>
+        <h2>г. Москва, улица Ефремова, 10с1</h2>
+        <div class="contact-icons">
+          <a href="https://wa.me/79099549208" target="_blank" class="whatsapp-icon" aria-label="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+          <a href="https://t.me/pulsefitness" target="_blank" class="telegram-icon" aria-label="Telegram">
+            <i class="fab fa-telegram-plane"></i>
+          </a>
+        </div>
+      </div>
+
+      <script type="text/javascript" charset="utf-8" async
+              src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Acc2cb9b1f34eacc61822674dbba3263777cdc0e3db6176877f4ad2880e44ae50&amp;width=100%&amp;height=100%&amp;lang=ru_RU&amp;scroll=true">
+      </script>
+    </div>
+  </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-text">&copy; 2024 Pulse Fitness. Все права защищены.</p>
+    </div>
+  </footer>
+
+
+<script>
+  function updateAuthLinks(isLoggedIn, username) {
+    if (isLoggedIn) {
+      document.getElementById('loginLink').style.display = 'none';
+      document.getElementById('registerLink').style.display = 'none';
+      document.getElementById('profileLink').style.display = 'inline';
+      document.getElementById('logoutLink').style.display = 'inline';
+      document.getElementById('usernameDisplay').textContent = username;
+    } else {
+      document.getElementById('loginLink').style.display = 'inline';
+      document.getElementById('registerLink').style.display = 'inline';
+      document.getElementById('profileLink').style.display = 'none';
+      document.getElementById('logoutLink').style.display = 'none';
+    }
+  }
+
+</script>
+<script defer>
+  document.addEventListener("DOMContentLoaded", function () {
+    if ("[[${actionMessage != null}]]" === "true") {
+      $('#actionResultModal').modal('show');
+    }
+  });
+</script>
+<script src="/card.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/main.js"></script>
+</body>
+</html>
